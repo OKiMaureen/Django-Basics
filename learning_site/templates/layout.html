@@ -8,11 +8,19 @@
             {% block title %}{% endblock %}
         </title>
         <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+
     </head>
-        <body>
-            <div class="site-container">
+        <body class="m-5 w-75 h-25 mx-auto container-fluid ">
+            <nav class="bg-info">
+                <a class="text-light ml-5" href="{% url 'courses:list' %}">Courses</a>
+            </nav>
+            <div class=" text-white text-center row mx-auto">
                 {% block content %}{% endblock %}
             </div>
 
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
         </body>
 </html>

@@ -1,5 +1,27 @@
 
-{% for course in courses %}
-<h2>{{course.title}}</h2>
-{{course.description}}
-{% endfor %}
+{% extends 'layout.html' %}
+
+{% block title %}Available Courses{% endblock %}
+
+{% block content %}
+
+
+
+             {% for course in courses %}
+            <div class="card col-sm-3 mx-auto mt-5 ">
+            <div class=" card-header h-50">
+                <p><a  class="text-info" href="{% url 'courses:detail' pk=course.pk %}">{{course.title}}</a></p>
+            </div>
+            <div class="card-body">
+                <p class="text-info">{{course.description}}</p>
+
+            </div>
+            </div>
+             {% endfor %}
+
+
+
+{% endblock %}
+
+
+

@@ -21,9 +21,9 @@ from . import views
 
 
 urlpatterns = [
-    path('courses/', include('courses.url')),
+    path('courses/', include(('courses.url', 'courses'), namespace='courses')),
     path('admin/', admin.site.urls),
     path('', views.index),
 ]
 
-urlpatterns +=  staticfiles_urlpatterns()
+urlpatterns += staticfiles_urlpatterns()

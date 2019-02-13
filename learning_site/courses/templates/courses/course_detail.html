@@ -1,19 +1,24 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ course.title }} {% endblock %}
+{% block title %} {{ course.title }} {% endblock %}
 
 {% block content %}
 
-<article>
-    <h2>
-        {{course.title}}
-    </h2>
-    {{ course.description }}
-    <section>
-        {% for step in course.step_set.all %}
-        <h3>{{step.title}}</h3>
-        {{step.description}}
+<article bg-info>
+    <div class="card col mx-auto mt-5">
+        <div class="card-header">
+            <p class="text-info">{{course.title}}</p>
+        </div>
+
+        <div class="card-body">
+            <p class="text-info">{{ course.description }}</p>
+            <p class="text-info">{% for step in course.step_set.all %}</p>
+        <br/>
+            <p>
+                <a class="text-info" href="{% url 'courses:step' course_pk=step.course.pk step_pk=step.pk %}">{{step.title}}</a></p>
+        <p class="text-info">{{step.description}}</p>
         {% endfor %}
-    </section>
+        </div>
+    </div>
 </article>
 {% endblock %}
