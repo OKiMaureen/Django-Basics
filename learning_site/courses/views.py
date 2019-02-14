@@ -61,10 +61,17 @@ class CourseViewSet(viewsets.ModelViewSet):
     
     @detail_route(methods=['get'])
     def steps(self, request, pk=None):
-        course= self.get_object()
+        self.pagination_class.page_size = 1
+        steps = Step.objects.filter(course_id=pk)
+        page = self.paginate_queryset(steps)
+        if page is not None:
+            serializer = StepSerializer(
+               page, many=True
+            )
+            return self.get_paginated_response(serializer.data)
         serializer = StepSerializer(
-            course.steps.all(), many=True
-        )
+               steps, many=True
+            )
         return Response(serializer.data)
 
 class StepViewSet(mixins.CreateModelMixin,
