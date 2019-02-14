@@ -13,7 +13,10 @@ class StepSerializer(serializers.ModelSerializer):
         model= models.Step
 
 class CourseSerializer(serializers.ModelSerializer):
-    steps = StepSerializer(many=True, read_only=True)
+    steps = serializers.HyperlinkedRelatedField(
+        many=True, 
+        read_only=True,
+        view_name= 'courses_v2_api:step_detail_api')
     class Meta:
         fields = (
             'created_at',
