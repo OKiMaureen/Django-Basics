@@ -13,10 +13,12 @@ class StepSerializer(serializers.ModelSerializer):
         model= models.Step
 
 class CourseSerializer(serializers.ModelSerializer):
+    steps = StepSerializer(many=True, read_only=True)
     class Meta:
         fields = (
             'created_at',
             'title',
-            'description',    
+            'description', 
+            'steps',   
         )
         model= models.Course
