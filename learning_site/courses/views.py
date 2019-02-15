@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-from rest_framework import generics, viewsets, mixins
+from rest_framework import generics, viewsets, mixins, permissions
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from .models import Course, Step
@@ -54,8 +54,20 @@ class StepRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
            course_id=self.kwargs.get('course_pk'),
            pk=self.kwargs.get('pk')
        )
-   
+
+class IsSuperUser (permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_superuser:
+            return True
+        else:
+            if request.method == 'DELETE':
+               return False
+        return True
+
 class CourseViewSet(viewsets.ModelViewSet):
+    permission_classes = (
+        IsSuperUser,
+        permissions.DjangoModelPermissions,)
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     

@@ -11,6 +11,12 @@ class StepSerializer(serializers.ModelSerializer):
             'course',     
         )
         model= models.Step
+    def validate_order(self,value):
+        if value < 0:
+            raise serializers.ValidationError(
+                'Order cannot be a negative number'
+            )
+        return value
 
 class CourseSerializer(serializers.ModelSerializer):
     steps = serializers.HyperlinkedRelatedField(
