@@ -19,7 +19,7 @@ class StepSerializer(serializers.ModelSerializer):
         return value
 
 class CourseSerializer(serializers.ModelSerializer):
-    steps = serializers.HyperlinkedRelatedField(
+    steps = serializers.PrimaryKeyRelatedField(
         many=True, 
         read_only=True,
         view_name= 'courses_v2_api:step-detail')
