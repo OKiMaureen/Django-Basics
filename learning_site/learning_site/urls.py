@@ -30,6 +30,7 @@ urlpatterns = [
     path('courses/', include(('courses.url', 'courses'), namespace='courses')),
     path('admin/', admin.site.urls),
     path('', views.index),
+    
     path('auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
     path('api/v1/courses/', include(('courses.url', 'courses_api'), namespace='courses_api')),
     path('api/v2/', include((router.urls, 'courses_v2_api'), namespace='courses_v2_api')),

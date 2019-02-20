@@ -57,12 +57,10 @@ class StepRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 class IsSuperUser (permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.user.is_superuser:
-            return True
+        if not request.user.is_superuser and request.method == 'DELETE':
+          return False
         else:
-            if request.method == 'DELETE':
-               return False
-        return True
+          return True
 
 class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = (
@@ -85,7 +83,7 @@ class CourseViewSet(viewsets.ModelViewSet):
                steps, many=True
             )
         return Response(serializer.data)
-
+ 
 class StepViewSet(mixins.CreateModelMixin,
                     mixins.RetrieveModelMixin,
                     mixins.UpdateModelMixin,

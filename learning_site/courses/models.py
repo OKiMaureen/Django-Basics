@@ -16,7 +16,7 @@ class Step(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     order = models.IntegerField(default=0)
-    content = models.TextField(blank=True, default='')
+    content = models.TextField()
     course = models.ForeignKey(Course,  on_delete=models.CASCADE, related_name='steps')
 
     class Meta:
