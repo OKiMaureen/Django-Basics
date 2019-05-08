@@ -17,15 +17,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from rest_framework import routers
 from . import views
+from courses import views as view
 
+
+router = routers.SimpleRouter()
+router.register('courses', view.CourseViewSet)
+router.register('step', view.StepViewSet)
 
 urlpatterns = [
     path('courses/', include(('courses.url', 'courses'), namespace='courses')),
     path('admin/', admin.site.urls),
     path('', views.index),
+    
     path('auth/', include(('rest_framework.urls', 'rest_framework'), namespace='rest_framework')),
     path('api/v1/courses/', include(('courses.url', 'courses_api'), namespace='courses_api')),
+    path('api/v2/', include((router.urls, 'courses_v2_api'), namespace='courses_v2_api')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

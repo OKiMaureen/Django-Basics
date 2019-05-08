@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404, render
-from rest_framework.views import APIView, status
+from rest_framework import generics, viewsets, mixins, permissions
+from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from .models import Course, Step
-from . import serializers
+from .serializers import StepSerializer, CourseSerializer
 
 # Create your views here.
 
@@ -22,14 +23,77 @@ def step_detail(request, course_pk, step_pk):
     return render(request, 'courses/step_detail.html', {'step': step})
 
 
-class CourseApi(APIView):
-    def get(self, request, format=None):
-        courses = Course.objects.all()
-        serializer = serializers.CourseSerializer(courses, many=True)
-        return Response(serializer.data)
+class CourseListCreateView(generics.ListCreateAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
 
-    def post(self, request, format=None):
-        serializer = serializers.CourseSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+class CourseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+class StepListCreateView(generics.ListCreateAPIView):
+    serializer_class = StepSerializer
+
+    def get_queryset(self):
+       return Step.objects.all().filter(course_id=self.kwargs.get('course_pk'))
+
+    def perform_create(self, serializer):
+        course = get_object_or_404(
+            Course, pk=self.kwargs.get('course_pk')
+        )
+        serializer.save(course=course)
+
+
+class StepRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+   queryset = Step.objects.all()
+   serializer_class = StepSerializer
+
+   def get_object(self):
+       return get_object_or_404(
+           Step,
+           course_id=self.kwargs.get('course_pk'),
+           pk=self.kwargs.get('pk')
+       )
+
+class IsSuperUser (permissions.BasePermission):
+    def has_permission(self, request, view):
+        if not request.user.is_superuser and request.method == 'DELETE':
+          return False
+        else:
+          return True
+
+class CourseViewSet(viewsets.ModelViewSet):
+    permission_classes = (
+        IsSuperUser,
+        permissions.DjangoModelPermissions,)
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    
+    @detail_route(methods=['get'])
+    def steps(self, request, pk=None):
+        self.pagination_class.page_size = 1
+        steps = Step.objects.filter(course_id=pk)
+        page = self.paginate_queryset(steps)
+        if page is not None:
+            serializer = StepSerializer(
+               page, many=True
+            )
+            return self.get_paginated_response(serializer.data)
+        serializer = StepSerializer(
+               steps, many=True
+            )
+        return Response(serializer.data)
+ 
+class StepViewSet(mixins.CreateModelMixin,
+                    mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    viewsets.GenericViewSet):
+    queryset = Step.objects.all()
+    serializer_class = StepSerializer
+
+
+
+
+
+    

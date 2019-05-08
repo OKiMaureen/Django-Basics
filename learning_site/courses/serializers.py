@@ -11,12 +11,23 @@ class StepSerializer(serializers.ModelSerializer):
             'course',     
         )
         model= models.Step
+    def validate_order(self,value):
+        if value < 0:
+            raise serializers.ValidationError(
+                'Order cannot be a negative number'
+            )
+        return value
 
 class CourseSerializer(serializers.ModelSerializer):
+    steps = serializers.HyperlinkedRelatedField(
+        many=True, 
+        read_only=True,
+        view_name= 'courses_v2_api:step-detail')
     class Meta:
         fields = (
             'created_at',
             'title',
-            'description',    
+            'description', 
+            'steps',   
         )
         model= models.Course
