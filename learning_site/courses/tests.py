@@ -17,7 +17,7 @@ class CourseModelTest(TestCase):
         self.assertLess(course.created_at, now)
 
 
-class StepModelTests(TestCase):
+class StepModelTesting(TestCase):
     def setUp(self):
         self.course = Course.objects.create(
             title="A really simple title",
